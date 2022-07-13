@@ -1,6 +1,7 @@
 
 from datetime import datetime
 import random
+import re
 
 class Ciudadano:
     def __init__(self, nombre, apellido, numCedula, ocupacion, nacionalidad, fechaDeNacimiento, discapacidad ):
@@ -41,14 +42,16 @@ class Ciudadano:
 
 class VotanteSiNo(Ciudadano):
 
-    def ComprobarEcuatoriano(self):
-        return (self.nacionalidad == 'Ecuatoriano')
+    def ComprobarEcuatoriano(self, ):
+        if self.nacionalidad == 'Ecuatoriano':
+            return True
+        return False
 
     
     def Mayor18(self):
         '''condicion principal '''
-        dato = self.ComprobarEcuatoriano()
-        if dato == True:
+        
+        if self.ComprobarEcuatoriano() == True:
             '''ocupar principalmente edad '''
             fechaActual = datetime.now()
             fechaActual = fechaActual.strftime("%Y-%m-%d")
@@ -85,11 +88,11 @@ class VotanteSiNo(Ciudadano):
             
 
 class MiembroDeMesa:
-    def EsVotante(self):
-        datoBooleano = VotanteSiNo.Mayor18(self)
-        return datoBooleano == True
-    def OcupacionImportante(self,ocupacion):
-        if self.EsVotante() == True:
+    
+    def EsVotante(self, Mayor18):
+        return Mayor18 == True
+    def OcupacionImportante(self,ocupacion, Mayor18):
+        if self.EsVotante(Mayor18) == True:
             if ocupacion[: 19] == 'Estudiante-Superior':
                 return True
             elif ocupacion[:15] == 'Empleado-Publico':
@@ -118,13 +121,17 @@ def darDatos(descrip, descrip2, descrip3):
 if __name__=='__main__':
     '''
        (nombre, apellido, numCedula, ocupacion, nacionalidad, fechaDeNacimiento, discapacidad)'''
-    nombre = pedirDatos('nombre, con formato (NN NN) ')
-    apellido = pedirDatos('apellido, con formato (AA AA)')
-    numCedula = pedirDatos('numero, de cedula con formato (##########)')
-    ocupacion = pedirDatos('ocupacion, con formato ejemplo (Estudiante-Superior)')
-    nacionalidad = pedirDatos('nacionalidad, con formato ejemplo(Ecuatoriano)')
-    fecha = pedirDatos('fecha de nacimiento, en el formato año-mes-dia : ')
-    discapacidad = bool(pedirDatos('si tiene discapacidad con (True o False)'))
-    ciudadano = VotanteSiNo(nombre, apellido, numCedula, ocupacion, nacionalidad, fecha, discapacidad)
-    ciudadanoMas = Randon()
-    darDatos(ciudadano.Mayor18(), ciudadano.EsParaVotoFacultativo(), ciudadanoMas.EsSeleccionado(ciudadano.ocupacion))
+    #nombre = pedirDatos('nombre, con formato (NN NN) ')
+    #apellido = pedirDatos('apellido, con formato (AA AA)')
+    #numCedula = pedirDatos('numero, de cedula con formato (##########)')
+    #ocupacion = pedirDatos('ocupacion, con formato ejemplo (Estudiante-Superior)')
+    #nacionalidad = pedirDatos('nacionalidad, con formato ejemplo(Ecuatoriano)')
+    #fecha = pedirDatos('fecha de nacimiento, en el formato año-mes-dia : ')
+    #discapacidad = bool(pedirDatos('si tiene discapacidad con (True o False)'))
+    ciudadano = VotanteSiNo('nombre', 'apellido', 'numCedula', 'Estudiante-Superior', 'Ecuatoriano', '2002-08-02', True)
+    ciudadanoMas = MiembroDeMesa()
+    #print(ciudadanoMas.dato())
+    darDatos(ciudadano.Mayor18(), ciudadano.EsParaVotoFacultativo(), ciudadanoMas.OcupacionImportante(ciudadano.ocupacion, ciudadano.Mayor18()))
+
+
+
