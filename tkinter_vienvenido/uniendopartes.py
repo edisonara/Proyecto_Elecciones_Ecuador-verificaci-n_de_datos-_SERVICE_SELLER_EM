@@ -12,13 +12,28 @@ def Buscar():
     ventanaEmergente.iconbitmap(r'C:\Users\eaar2\POO___unidad 2\PROYECTO GRUPAL\tkinter_vienvenido\folder.ico')
     frame2 = Frame(ventanaEmergente ,width=250, height= 250)
     frame2.grid()
-# rellenar fill
-# expand expandir
-    frame2.config(bg='lightblue')
+    frame2.config(bg='black')
     frame2.config(bd= 75)
-    datosPuestos = (mycol.find_one({'nombre':'Juan'},{'_id':0,'nombre':1}))
-    Label(ventanaEmergente, text=datosPuestos).grid(row=0, column=0)
-    Entry(ventanaEmergente, text=datosPuestos, state='disable').grid(row=0, column=1)
+    nombre= name.get().strip()
+    apellido1 = apellido.get().strip()
+    datosPuestos = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'nombre':1}))
+    datosPuestos1 = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'apellido':1}))
+    datosPuestos2 = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'numeroCedula':1}))
+    datosPuestos3 = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'ocupacion':1}))
+    datosPuestos4 = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'Residencia':1}))
+    datosPuestos5 = (mycol.find_one({'nombre':nombre, 'apellido':apellido1},{'_id':0,'Nacionalidad':1}))
+    dato1 = datosPuestos
+    dato2 = datosPuestos1
+    dato3 = datosPuestos2
+    dato4 = datosPuestos3
+    dato5 = datosPuestos4
+    dato6 = datosPuestos5
+    Label(frame2, text=dato1).grid(row=1, column=0)
+    Label(frame2, text=dato2).grid(row=2, column=0)
+    Label(frame2, text=dato3).grid(row=3, column=0)
+    Label(frame2, text=dato4).grid(row=4, column=0)
+    Label(frame2, text=dato5).grid(row=5, column=0)
+    Label(frame2, text=dato6).grid(row=6, column=0)
 
 micliente=pymongo.MongoClient("mongodb://localhost:27017/")
 mydb=micliente["datosparaforo"]
@@ -35,7 +50,7 @@ frame.pack()
 
 # rellenar fill
 # expand expandir
-frame.config(bg='lightblue')
+frame.config(bg='black')
 frame.config(bd= 100)
 Label(frame, text='NOMBRE: ').grid(row=1, column=0)
 #INGRESAR NOMBRE
