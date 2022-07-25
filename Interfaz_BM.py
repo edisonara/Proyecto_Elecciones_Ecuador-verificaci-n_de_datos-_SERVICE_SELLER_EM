@@ -158,6 +158,8 @@ class SERVY_SELLER_BM:
         fileMenu.add_separator()
         fileMenu.add_command(label='Salir', command= rooter.quit)
 
+
+
         editMenu = Menu(menuBar, tearoff= 0)
         editMenu.add_command(label= 'Reporte de Uso')
         editMenu.add_checkbutton(label= 'check')
