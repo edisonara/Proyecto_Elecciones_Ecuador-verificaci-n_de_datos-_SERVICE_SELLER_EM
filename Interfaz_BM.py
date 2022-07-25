@@ -158,7 +158,7 @@ class SERVY_SELLER_BM:
         fileMenu.add_separator()
         fileMenu.add_command(label='Salir', command= rooter.quit)
 
-git commit -m 'subiendo programa con interfas grafica y coneccion en mongoDB ,todo en clases'
+
 
         editMenu = Menu(menuBar, tearoff= 0)
         editMenu.add_command(label= 'Reporte de Uso')
