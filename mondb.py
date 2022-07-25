@@ -73,6 +73,8 @@ Retorna:
             return datoEncontrado['Residencia']
         elif dato == 'Nacionalidad':
             return datoEncontrado['Nacionalidad']
+        elif dato == 'Discapacidad':
+            return datoEncontrado['Discapacidad']
 
 '''
 10 documentos a la colección

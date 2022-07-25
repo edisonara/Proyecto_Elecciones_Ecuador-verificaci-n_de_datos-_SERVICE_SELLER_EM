@@ -95,8 +95,8 @@ class SERVY_SELLER_BM:
         previamente creada, con la función "Get()".
         '''
         apellido1 = self.variableApellido.get().strip()
-        obtenDatos = BuscarEnBaseDato(nombre=nombre, apellido=apellido1,  coleccion="ciudadanos" ,db="datosparaforo")
-        ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('numeroCedula'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('Nacionalidad'),'2002-08-02' ,True)
+        obtenDatos = BuscarEnBaseDato(nombre=nombre, apellido=apellido1,  coleccion="CiudadanoSufragantes" ,db="datosParaProyecto")
+        ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('numeroCedula'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('Nacionalidad'),'2002-08-02' ,obtenDatos.Buscar('Discapacidad'))
         seleccionado = Randon()
 
         '''
