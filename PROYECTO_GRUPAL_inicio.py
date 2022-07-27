@@ -1,4 +1,5 @@
-
+'''Pa'''
+'''LIsta de restricciones con status. En la base de datos. '''
 from datetime import datetime, date
 import random
 import holidays
@@ -180,6 +181,7 @@ class VotanteSiNo(Ciudadano):
             diferenciaTiempo= fechaActual.year - ano
             diferenciaTiempo -= ((fechaActual.month,fechaActual.day)< (mes, dia))
             self.Edad= diferenciaTiempo
+            
             return (diferenciaTiempo > 18)
         else:
             return False
@@ -188,28 +190,27 @@ class VotanteSiNo(Ciudadano):
         '''Método EsParaVotoFacultativo (Metodo de la clase VotanteSiNo), comprueba si el ciudadano tiene cualidades para tener voto facultativo o opcional. \n
         Condicion principal secundaria, que sera llamada el el objeto.
 
------
------
-Retorna.
------
---------
--------
+        -----
+        -----
+        Retorna.
+        -----
+
         Principalmente tiene que ser votante, para poder tener las condiciones.
         - >>> dato = self.Mayor18()
         - >>> if dato == True: 
 
 
-True:  
----
-Si cumple las siguientes condiciones.
->>> self.discapacidad == True: Si es discacitado manda True. \n
->>> self.ocupacion[0:7] == 'Militar': Si la ocupacion es Militar Retorna true. \n
->>> self.ocupacion[0:7] == 'Policía': Si la ocupacion es Policía Retorna true. \n
->>> elif (self.Edad >= 16 and self.Edad < 18) or (self.Edad > 65): El cual condiciona si el ecuatoriano es de rango de 16 y 17, tambien que sea mayor de 65 años. Estos serian True.
+        True:  
+        ---
+        Si cumple las siguientes condiciones.
+        >>> self.discapacidad == True: Si es discacitado manda True. \n
+        >>> self.ocupacion[0:7] == 'Militar': Si la ocupacion es Militar Retorna true. \n
+        >>> self.ocupacion[0:7] == 'Policía': Si la ocupacion es Policía Retorna true. \n
+        >>> elif (self.Edad >= 16 and self.Edad < 18) or (self.Edad > 65): El cual condiciona si el ecuatoriano es de rango de 16 y 17, tambien que sea mayor de 65 años. Estos serian True.
 
-False: 
----
-- Si no cumple las condiciones anteriores retorna false. '''
+        False: 
+        ---
+        - Si no cumple las condiciones anteriores retorna false. '''
         dato = self.Mayor18()
         if dato == True:
             if self.discapacidad == True:
@@ -257,8 +258,6 @@ class MiembroDeMesa:
         -------
         Retorna. 
         ----
-        ----
-        -------
         
         True:
         ----
@@ -429,6 +428,8 @@ Retorna.
 
 
 def PrintDeFechaVotacion():
+
+    
     '''Procedimiento PrintDeFechaVotacion que nos ayuda a verificar si la fecha actual es la fecha de votación. 
     
     >>> fechaActual = datetime.now()
@@ -439,10 +440,12 @@ def PrintDeFechaVotacion():
     >>> else: 
     >>>     no es fecha. 
     '''
+    '''Mensaje tiene que sere cambiables. '''
     fechaActual = datetime.now()
     fechaActual = fechaActual.strftime("%Y-%m-%d")
     votaciones = RestriccionVotacion(fechaActual)
     if votaciones.AplicaRestriccion():
+
         return('''
         **** Se le comunica al ciudadano/a que en los tres días previos a las elecciones  *******
         ****    no puede ingerir bebidas alcohólicas                                      *******

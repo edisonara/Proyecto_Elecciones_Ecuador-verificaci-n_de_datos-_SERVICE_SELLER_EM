@@ -5,18 +5,37 @@ from tkinter import ttk
 from tkinter import *
 from turtle import color
 from urllib.response import addinfo
-from PROYECTO_GRUPAL_inicio import *
+#from PROYECTO_GRUPAL_inicio import *
 from mondb import *
+from Restricciones_LOGUICA import *
 
+''''Numero de mesas, vocales, ciudadanos por ciudades, x = tiempo, y= dato. 
 
+hacer graficos de la distribucion, datos ordinales. '''
 
 class SERVY_SELLER_BM:
-    def __init__(self):
-        #self.nombre = StringVar()
-        #self.apellido =StringVar()
-        pass
+    '''Clase SERVY_SELLER_BM, el cual es el principal, por donde se ejecutara el programa. Es la interfas que podra interactuar el usuario con el programa.\n
+    Por motivos de que el programa interactua en bloques se hizo un poco complejo implementar atributos principales en esta clase.  
+    
+    Metodos
+    ----
+    - def iniciar(self): Metodo que crea el Rooter y el frame principal del programa. 
+    - def LABEL(self, texto, fila, columna): Maqueta de el  label para pedir datos. 
+    - def ENTRY(self, fila, columna): Maqueta para pedir datos de nombre.  
+    - def ENTRY1(self, fila, columna): Maqueta para pedir datos de apellido. 
+    - def BUTTON(self, fila , columna): Maqueta de un botton.
+    - def VentanaSecundaria(self): Ventana secundaria del programa y coneccion con el mongoDB. 
+    - def MenuSuperior(self, rooter): Maqueta para el munu superior del programa. 
+    - def terminar(self): Termina el programa.'''
 
     def iniciar(self):
+        '''Metodo iniciar, que crea el Rooter y el frame principal del programa. 
+        
+        Utiliza 
+        -----
+        - Tk: para el root. 
+        - Frame. Para el frame del programa. 
+        - self.MenuSuperior(self.root): Para poner le menu superior del programa.  '''
         self.root = Tk()
         self.root.title('VERIFICACIÓN DE VOTACIÓN DE CIUDADANOS')
         self.root.resizable(1,1)
@@ -29,9 +48,22 @@ class SERVY_SELLER_BM:
         
 
     def LABEL(self, texto, fila, columna):
+        '''CLase LABEL, el cual crea label o textos que ayudan con la interaccion del usuario y el programa. 
+        
+        Parametros.
+        -------
+        - texto: Es el texto del Label.  
+        - fila: Es el fila del Label. 
+        - columna: Es el  columna del Label. '''
         Label(self.frame, text=texto).grid(row=fila, column=columna)
 
     def ENTRY(self, fila, columna):
+        '''Clase ENTRY, para recibir el nombre ingresado, el cual se manejara con dato. 
+        
+        Parametros.
+        -----
+        - fila: Es el fila del entry. 
+        - columna: Es el  columna del entry '''
         self.nombre = StringVar()
         self.nombreRetorna = StringVar()
         self.variableNombre = Entry(self.frame, justify='center',textvariable=self.nombre)
@@ -39,6 +71,12 @@ class SERVY_SELLER_BM:
         self.variableNombre.grid(row=fila, column=columna)
        
     def ENTRY1(self, fila, columna):
+        '''Clase ENTRY1, para recibir el apellido ingresado, el cual se manejara con dato. 
+        
+        Parametros.
+        -----
+        - fila: Es el fila del entry. 
+        - columna: Es el  columna del entry '''
         self.apellido = StringVar()
         self.apellidoRetorna= StringVar()
         self.variableApellido = Entry(self.frame, justify='center',textvariable=self.apellido)
@@ -47,16 +85,27 @@ class SERVY_SELLER_BM:
         
 
     def BUTTON(self, fila , columna):
+        '''Clase BUTTON, Para hacer una accion, en este caso el de ventana secundaria, haciendolo ejecutar. 
+        
+        Parametros.
+        -----
+        - fila: Es el fila del boton. 
+        - columna: Es el  columna del boton.  '''
         ttk.Button(self.frame, text='Buscar', command=self.VentanaSecundaria).grid(row=fila, column=columna, sticky=W + E)
     def VentanaSecundaria(self):
+        '''Metodo VentanaSecundaria, el cual crea una ventana nueva y secundaria. Se le pasa los datos del mongoDB con respecto de de los datos ingresados. \n
+        Contiene tre objetos para poder pasar esos datos. 
+        Pasa todos los datos de estos Imprimiendo los datos en Labels y enrtys. 
+
+        
+Instancias.
+----
+        - obtenDatos: El cual es Instancia de la clase BuscarEnBaseDato.
+        - ciudadano: El cual es Instancia de la clase VotanteSiNo.
+        - seleccionado: El cual es Instancia de la clase Randon.
+
+
         '''
-        Variable que presenta la etiqueta del mensaje para cargar los resultados.
-        '''
-        #mensaje= Label(root, text='\n\ncargando resultados... ', fg='red')
-        '''
-        Ponemos la variable "mensaje" con la opción de un widget llene todo el marco.
-        '''
-        #mensaje.pack()
         '''
         La siguiente línea de código se utiliza para crear una ventana de nivel superior
         encima de las diferentes ventanas.
@@ -95,8 +144,29 @@ class SERVY_SELLER_BM:
         previamente creada, con la función "Get()".
         '''
         apellido1 = self.variableApellido.get().strip()
-        obtenDatos = BuscarEnBaseDato(nombre=nombre, apellido=apellido1,  coleccion="CiudadanoSufragantes" ,db="datosParaProyecto")
-        ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('numeroCedula'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('Nacionalidad'),'2002-08-02' ,obtenDatos.Buscar('Discapacidad'))
+
+        '''Instancias 
+        '''
+        '''Instancia de la clase BuscarEnBaseDato. '''
+        obtenDatos = BuscarEnBaseDato(  coleccion="COL_CiudadanosEcuadorCNE" ,db="DB_CiudadanosEcuadorCNE")
+        obtenDatos.RecibirNombre(nombre= nombre, apellido= apellido1)
+        restricciones = BuscarEnBaseDato( coleccion="COL_Condiciones_Para_Votantes_CNE" ,db="DB_CiudadanosEcuadorCNE")
+        restricciones.recibirDatoBusqueda('ciudadania')
+        Ciudadania = restricciones.BuscaRestriccion()        
+        restricciones.recibirDatoBusqueda('Mayor_Edad')
+        Mayor_Edad = restricciones.BuscaRestriccion()
+        restricciones.recibirDatoBusqueda('Facultativo_Ocupacion')
+        Facultativo_Ocupacion = restricciones.BuscaRestriccion()
+        restricciones.recibirDatoBusqueda('Tercera_Edad')
+        Tercera_Edad = restricciones.BuscaRestriccion()
+        restricciones.recibirDatoBusqueda('Adolescente_Edad')
+        Adolescente_Edad = restricciones.BuscaRestriccion()
+        restricciones.recibirDatoBusqueda('OcupacicionParaMesa_1')
+        Ocupacicion_Para_Mesa = restricciones.BuscaRestriccion()
+
+        '''Instancia de la clase VotanteSiNo. '''
+        ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('cedula de identidad'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('residencia '), obtenDatos.Buscar('nacionalidad'),obtenDatos.Buscar('fecha de nacimiento'),obtenDatos.Buscar('discapacidad'))
+        '''Instancia de la clase Randon. '''
         seleccionado = Randon()
 
         '''
@@ -127,12 +197,27 @@ class SERVY_SELLER_BM:
         discapacidadImprime.set(str(ciudadano.discapacidad))
 
 
-        fechaDeVotacion = StringVar()
-        fechaDeVotacion.set(str(PrintDeFechaVotacion()))
+        mensajesPrint = BuscarEnBaseDato( coleccion="COL_Mensajes_Para_Votantes_CNE" ,db="DB_CiudadanosEcuadorCNE")
+        mensajesPrint.recibirDatoBusqueda('Mensaje Votante')
+        MSGVotate = mensajesPrint.BuscaRestriccion()
+        mensajesPrint.recibirDatoBusqueda('Mensaje Votante_Facultativo')          
+        MSGFacultativo = mensajesPrint.BuscaRestriccion()
+        mensajesPrint.recibirDatoBusqueda('Mensaje Miembro_Mesa')
+        MSGMesa = mensajesPrint.BuscaRestriccion()
+        mensajesPrint.recibirDatoBusqueda('Mensaje SI_DIA')
+        MSGDiaSI = mensajesPrint.BuscaRestriccion()
+        mensajesPrint.recibirDatoBusqueda('Mensaje NO_DIA')
+        MSGDiaNO = mensajesPrint.BuscaRestriccion()
 
-        verificacionVotante = darDatos(ciudadano.Mayor18(),  ciudadano.EsParaVotoFacultativo(), seleccionado.EsSeleccionado(ciudadano.ocupacion , ciudadano.Mayor18()))
+
+
+        fechaDeVotacion = StringVar()
+        fechaDeVotacion.set(str(PrintDeFechaVotacion(MSGDiaSI,MSGDiaNO )))
+
+        verificacionVotante = darDatos(MSGVotate, MSGFacultativo,MSGMesa, ciudadano.Mayor18(Mayor_Edad,Ciudadania ),  ciudadano.EsParaVotoFacultativo(Mayor_Edad, Ciudadania,Facultativo_Ocupacion, Tercera_Edad, Adolescente_Edad ), seleccionado.EsSeleccionado(ciudadano.ocupacion , ciudadano.Mayor18(Mayor_Edad,Ciudadania), Ocupacicion_Para_Mesa))
         verificacionVotante2 = StringVar()
         verificacionVotante2.set(str(verificacionVotante))
+        '''Impresion de los datos en pantalla----'''
         Label(frameEmergente, justify='center',text='nombre').grid(row=0, column=0)
         Entry(frameEmergente, justify='center', state= 'disabled',textvariable=nombreImprime).grid(row=0, column=1)
         Label(frameEmergente, justify='center',text='apellido').grid(row=1, column=0)
@@ -150,41 +235,101 @@ class SERVY_SELLER_BM:
         Label(ventanaEmergente, justify='center',textvariable=verificacionVotante2).grid()
         Label(ventanaEmergente, justify='center',textvariable=fechaDeVotacion).grid()
         
+    def VentanaAdminRestriccciones(self):
+        self.condicion = StringVar()
+        self.condicionCambio = StringVar()
+        #self.root.withdraw()
+        ventana=Toplevel()
+        ventana.title('Cambiar Datos')
+        ventana.resizable(0,0)
+        ventana.iconbitmap(r'C:\Users\eaar2\POO___unidad 2\PROYECTO GRUPAL\tkinter_vienvenido\folder.ico')
+        frameEmergente = Frame(ventana ,width=250, height= 250)
+        frameEmergente.config(bg='black')
+        frameEmergente.config(bd= 100)
+        frameEmergente.grid()
+        
+        '''Objeto, instancia de BuscarEnBaseDato... '''
+        
+        menasje = Label(frameEmergente,text= 'Ingrese una nueva condición para Considerar los Miembros de mesa: ')
+        menasje.config(bg='lightgreen')
+        menasje.grid(row=0, column=0)
+        Entry(frameEmergente, justify='center', textvariable= self.condicion).grid(row=1, column=0)
+        Button(frameEmergente, justify='center', text = 'Subir', command= self.Subir).grid(row=2, column=0)
+
+    def Subir(self):
+        dato = BuscarEnBaseDato(coleccion="COL_Condiciones_Para_Votantes_CNE" ,db="DB_CiudadanosEcuadorCNE")
+        self.condicionCambio.set(str(self.condicion.get()))
+        dato.BuscaRestriccion(self.condicionCambio)
+
+
+
+    def VentanaAdminRestriccciones1(self):
+        #self.root.withdraw()
+        ventana=Toplevel()
+        ventana.title('Cambiar Datos')
+        ventana.resizable(0,0)
+        ventana.iconbitmap(r'C:\Users\eaar2\POO___unidad 2\PROYECTO GRUPAL\tkinter_vienvenido\folder.ico')
+        frameEmergente = Frame(ventana ,width=250, height= 250)
+        frameEmergente.pack()
+        frameEmergente.config(bg='black')
+        frameEmergente.config(bd= 100)
+    
+
+  
+
     def MenuSuperior(self, rooter):
+        '''Metodo MenuSuperior, el cual contiene el esquema del menu superior del programa, con tres campos el de archivos, reportes y ayuda. 
+        
+        Parametro.
+        ----
+        - rooter: El cual seria el root de la ventana principal o secundaria. '''
         menuBar = Menu(rooter)
+
         rooter.config(menu = menuBar)
         fileMenu = Menu(menuBar, tearoff= 0)
         fileMenu.add_command(label= 'Descargrar Info')
         fileMenu.add_separator()
         fileMenu.add_command(label='Salir', command= rooter.quit)
-
-
-
+        #------------------------------------------------
         editMenu = Menu(menuBar, tearoff= 0)
-        editMenu.add_command(label= 'Reporte de Uso')
-        editMenu.add_checkbutton(label= 'check')
-        editMenu.add_radiobutton(label= 'radio')
+        editMenu.add_command(label= 'Reporte para Admin')
         editMenu.add_separator()
-        editMenu.add_command(label='Reporte de Usuario')
+        editMenu.add_command(label='Reporte para el Usuario')
+        #-------------------------------------------------
         helpMenu = Menu(menuBar, tearoff= 0)
         helpMenu.add_command(label= 'Ayuda')
+        helpMenu.add_separator()
         helpMenu.add_command(label='Acerca de...')
+        #-------------------------------------------------
+        OpAdmin = Menu(menuBar,  tearoff= 0)
+        OpAdmin.add_command(label= 'Cambiar Restricciones', command=self.VentanaAdminRestriccciones)
+        OpAdmin.add_separator()
+        OpAdmin.add_command(label= 'Cambiar Mensajes', command=self.VentanaAdminRestriccciones1)
+        #------------------------------------------------
         menuBar.add_cascade(label = 'Archivo', menu= fileMenu)
         menuBar.add_cascade(label = 'Reporte', menu= editMenu)
+        menuBar.add_cascade(label= 'Opciones Admin' ,menu= OpAdmin)
         menuBar.add_cascade(label = 'Ayuda', menu= helpMenu)
+        
 
     def terminar(self):
+        '''Metodo terminar, para poder encapsular el programa y salte la ejecución del programa al momento de iniciar. '''
         self.root.mainloop()
 
 
 
 
 if __name__=='__main__':
+    '''Instacia del metodo SERVY_SELLER_BM'''
     application = SERVY_SELLER_BM()
+    '''Inicia el programa. '''
     application.iniciar()
+    '''Ingresa el nombre. '''
     application.LABEL('Ingrese Nombre',1,0 )
     application.ENTRY(1,1)
+    '''Ingresa el apellido. '''
     application.LABEL('Ingrese Apellido',2,0 )
+    
     application.ENTRY1(2,1)
     
     #obtenDatos = BuscarEnBaseDato(nombre=application.nombreRetorna, apellido=application.apellidoRetorna,  coleccion="ciudadanos" ,db="datosparaforo")
@@ -192,5 +337,7 @@ if __name__=='__main__':
     
     #ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('numeroCedula'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('Nacionalidad'),'2002-08-02' ,True)
     #application.VentanaSecundaria(ciudadano.nombre, ciudadano.apellido, ciudadano.numCedula, ciudadano.ocupacion, ciudadano.nacionalidad, ciudadano.fechaDeNacimiento, ciudadano.discapacidad)
+    '''Ejecuta la ventana secundaria. '''
     application.BUTTON( 3,0)
+    '''Construye el programa. '''
     application.terminar()
