@@ -1,13 +1,17 @@
+import webbrowser
 from cProfile import label
 from logging import root
 import re
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkinter import *
 from turtle import color
 from urllib.response import addinfo
 #from PROYECTO_GRUPAL_inicio import *
 from mondb import *
 from Restricciones_LOGUICA import *
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
 
 ''''Numero de mesas, vocales, ciudadanos por ciudades, x = tiempo, y= dato. 
 
@@ -98,8 +102,8 @@ class SERVY_SELLER_BM:
         Pasa todos los datos de estos Imprimiendo los datos en Labels y enrtys. 
 
         
-Instancias.
-----
+        Instancias.
+        ----
         - obtenDatos: El cual es Instancia de la clase BuscarEnBaseDato.
         - ciudadano: El cual es Instancia de la clase VotanteSiNo.
         - seleccionado: El cual es Instancia de la clase Randon.
@@ -174,29 +178,23 @@ Instancias.
         interfaz gráfica, por ende los datos de cada ciudadano tendrá
         una nueva etiqueta que no se va a repetir.
         '''
-        
-        nombreImprime = StringVar()
-        nombreImprime.set(str(ciudadano.nombre))
-
-        apellidoImprime = StringVar()
-        apellidoImprime.set(str(ciudadano.apellido))
-
-        numeroCedulaImprime = StringVar()
-        numeroCedulaImprime.set(str(ciudadano.numCedula))
-
+        self.nombreImprime = StringVar()
+        self.nombreImprime.set(str(ciudadano.nombre))
+        self.apellidoImprime = StringVar()
+        self.apellidoImprime.set(str(ciudadano.apellido))
+        self.numeroCedulaImprime = StringVar()
+        self.numeroCedulaImprime.set(str(ciudadano.numCedula))
         ocupacionImprime= StringVar()
         ocupacionImprime.set(str(ciudadano.ocupacion))
-
         nacionalidadImprime = StringVar()
         nacionalidadImprime.set(str(ciudadano.nacionalidad))
-
         fechaDeNacimientoImprime = StringVar()
         fechaDeNacimientoImprime.set(str(ciudadano.fechaDeNacimiento))
-
         discapacidadImprime = StringVar()
         discapacidadImprime.set(str(ciudadano.discapacidad))
 
 
+        '''Recibe los datos de los mensajes a ser utilizados en la impresion de datos. '''
         mensajesPrint = BuscarEnBaseDato( coleccion="COL_Mensajes_Para_Votantes_CNE" ,db="DB_CiudadanosEcuadorCNE")
         mensajesPrint.recibirDatoBusqueda('Mensaje Votante')
         MSGVotate = mensajesPrint.BuscaRestriccion()
@@ -208,107 +206,75 @@ Instancias.
         MSGDiaSI = mensajesPrint.BuscaRestriccion()
         mensajesPrint.recibirDatoBusqueda('Mensaje NO_DIA')
         MSGDiaNO = mensajesPrint.BuscaRestriccion()
+        mensajesPrint.recibirDatoBusqueda('lugar_votacion')
+        mensajeLugar = mensajesPrint.BuscaRestriccion()
 
 
 
         fechaDeVotacion = StringVar()
+        '''Función para ver si es fecha de votaciones....'''
         fechaDeVotacion.set(str(PrintDeFechaVotacion(MSGDiaSI,MSGDiaNO )))
-
+        '''Funcion para dar los datos que se nesecita saber al momento de ir a votar. ....'''
         verificacionVotante = darDatos(MSGVotate, MSGFacultativo,MSGMesa, ciudadano.Mayor18(Mayor_Edad,Ciudadania ),  ciudadano.EsParaVotoFacultativo(Mayor_Edad, Ciudadania,Facultativo_Ocupacion, Tercera_Edad, Adolescente_Edad ), seleccionado.EsSeleccionado(ciudadano.ocupacion , ciudadano.Mayor18(Mayor_Edad,Ciudadania), Ocupacicion_Para_Mesa))
-        verificacionVotante2 = StringVar()
-        verificacionVotante2.set(str(verificacionVotante))
-        '''Impresion de los datos en pantalla----'''
-        Label(frameEmergente, justify='center',text='nombre').grid(row=0, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=nombreImprime).grid(row=0, column=1)
-        Label(frameEmergente, justify='center',text='apellido').grid(row=1, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=apellidoImprime).grid(row=1, column=1)
-        Label(frameEmergente, justify='center',text='Numero de Cédula').grid(row=2, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=numeroCedulaImprime).grid(row=2, column=1)
-        Label(frameEmergente, justify='center',text='Ocupación').grid(row=3, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=ocupacionImprime).grid(row=3, column=1)
-        Label(frameEmergente, justify='center',text='Nacionalidad').grid(row=4, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=nacionalidadImprime).grid(row=4, column=1)
-        Label(frameEmergente, justify='center',text='Fecha de Nacimiento').grid(row=5, column=0)
-        Entry(frameEmergente, justify='center' ,state= 'disabled',textvariable=fechaDeNacimientoImprime).grid(row=5, column=1)
-        Label(frameEmergente, justify='center',text='Discapacidad').grid(row=6, column=0)
-        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=discapacidadImprime).grid(row=6, column=1)
-        Label(ventanaEmergente, justify='center',textvariable=verificacionVotante2).grid()
-        Label(ventanaEmergente, justify='center',textvariable=fechaDeVotacion).grid()
-        
-    def VentanaAdminRestriccciones(self):
-        self.condicion = StringVar()
-        self.condicionCambio = StringVar()
-        #self.root.withdraw()
-        ventana=Toplevel()
-        ventana.title('Cambiar Datos')
-        ventana.resizable(0,0)
-        ventana.iconbitmap(r'C:\Users\eaar2\POO___unidad 2\PROYECTO GRUPAL\tkinter_vienvenido\folder.ico')
-        frameEmergente = Frame(ventana ,width=250, height= 250)
-        frameEmergente.config(bg='black')
-        frameEmergente.config(bd= 100)
-        frameEmergente.grid()
-        
-        '''Objeto, instancia de BuscarEnBaseDato... '''
-        
-        menasje = Label(frameEmergente,text= 'Ingrese una nueva condición para Considerar los Miembros de mesa: ')
-        menasje.config(bg='lightgreen')
-        menasje.grid(row=0, column=0)
-        Entry(frameEmergente, justify='center', textvariable= self.condicion).grid(row=1, column=0)
-        Button(frameEmergente, justify='center', text = 'Subir', command= self.Subir).grid(row=2, column=0)
+        self.verificacionVotante2 = StringVar()
+        self.verificacionVotante2.set(str(verificacionVotante))
+        self.verificacionVotante3 = StringVar()
+        lugar = (str(mensajeLugar)+str(ciudadano.lugarDeRecidencia)+'.')
+        self.verificacionVotante3.set(str(lugar))
+        '''Impresion de los datos en pantalla---- con la label para el info de la informacion que se presenta en entry. '''
+        Label(frameEmergente, justify='left',text='                  nombre ').grid(row=0, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=self.nombreImprime).grid(row=0, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=0, column=1)
+        Label(frameEmergente, justify='left',text='                apellido ').grid(row=1, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=self.apellidoImprime).grid(row=1, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=1, column=1)
+        Label(frameEmergente, justify='left',text='     Numero de Cédula ').grid(row=2, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=self.numeroCedulaImprime).grid(row=2, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=2, column=1)
+        Label(frameEmergente, justify='left',text='          Ocupación ').grid(row=3, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=ocupacionImprime).grid(row=3, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=3, column=1)
+        Label(frameEmergente, justify='left',text='       Nacionalidad ').grid(row=4, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=nacionalidadImprime).grid(row=4, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=4, column=1)
+        Label(frameEmergente, justify='left',text='Fecha de Nacimiento ').grid(row=5, column=0)
+        Entry(frameEmergente, justify='center' ,state= 'disabled',textvariable=fechaDeNacimientoImprime).grid(row=5, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=5, column=1)
+        Label(frameEmergente, justify='left',text='       Discapacidad ').grid(row=6, column=0)
+        Entry(frameEmergente, justify='center', state= 'disabled',textvariable=discapacidadImprime).grid(row=6, column=2)
+        Label(frameEmergente, justify='left',text='.').grid(row=6, column=1)
+        Label(ventanaEmergente, justify='center',textvariable=self.verificacionVotante2, fg='blue').grid()
+        Label(ventanaEmergente, justify='center',textvariable=self.verificacionVotante3, fg='blue').grid()
+        Ultim = Label(ventanaEmergente, justify='center',textvariable=fechaDeVotacion)
+        Ultim.grid()
+        #messagebox.showinfo('INFO DE VOTACION','gracias')
 
-    def Subir(self):
-        dato = BuscarEnBaseDato(coleccion="COL_Condiciones_Para_Votantes_CNE" ,db="DB_CiudadanosEcuadorCNE")
-        self.condicionCambio.set(str(self.condicion.get()))
-        dato.BuscaRestriccion(self.condicionCambio)
-
-
-
-    def VentanaAdminRestriccciones1(self):
-        #self.root.withdraw()
-        ventana=Toplevel()
-        ventana.title('Cambiar Datos')
-        ventana.resizable(0,0)
-        ventana.iconbitmap(r'C:\Users\eaar2\POO___unidad 2\PROYECTO GRUPAL\tkinter_vienvenido\folder.ico')
-        frameEmergente = Frame(ventana ,width=250, height= 250)
-        frameEmergente.pack()
-        frameEmergente.config(bg='black')
-        frameEmergente.config(bd= 100)
-    
-
+    def link_clicked(self):
+        '''Metodo link_clicked, que abre un link al ejecutarlo. '''
+        webbrowser.open("https://aceproject.org/ace-es/topics/lf/lfc/lfc24")
   
 
     def MenuSuperior(self, rooter):
-        '''Metodo MenuSuperior, el cual contiene el esquema del menu superior del programa, con tres campos el de archivos, reportes y ayuda. 
+        '''Metodo MenuSuperior, el cual contiene el esquema del menu superior del programa, con dos  campos el de archivos, ayuda. 
         
         Parametro.
         ----
         - rooter: El cual seria el root de la ventana principal o secundaria. '''
         menuBar = Menu(rooter)
-
         rooter.config(menu = menuBar)
+        '''Se crea una sección para archivo, con dos subsecciones. '''
         fileMenu = Menu(menuBar, tearoff= 0)
-        fileMenu.add_command(label= 'Descargrar Info')
+        fileMenu.add_command(label= 'Descargrar Info', command=self.PDFGuardar)
         fileMenu.add_separator()
         fileMenu.add_command(label='Salir', command= rooter.quit)
-        #------------------------------------------------
-        editMenu = Menu(menuBar, tearoff= 0)
-        editMenu.add_command(label= 'Reporte para Admin')
-        editMenu.add_separator()
-        editMenu.add_command(label='Reporte para el Usuario')
         #-------------------------------------------------
+        '''Se crea una sección para Ayuda, con una  subsección. '''
         helpMenu = Menu(menuBar, tearoff= 0)
-        helpMenu.add_command(label= 'Ayuda')
+        helpMenu.add_command(label= 'Base Legal', command= self.link_clicked)
         helpMenu.add_separator()
-        helpMenu.add_command(label='Acerca de...')
         #-------------------------------------------------
-        OpAdmin = Menu(menuBar,  tearoff= 0)
-        OpAdmin.add_command(label= 'Cambiar Restricciones', command=self.VentanaAdminRestriccciones)
-        OpAdmin.add_separator()
-        OpAdmin.add_command(label= 'Cambiar Mensajes', command=self.VentanaAdminRestriccciones1)
         #------------------------------------------------
         menuBar.add_cascade(label = 'Archivo', menu= fileMenu)
-        menuBar.add_cascade(label = 'Reporte', menu= editMenu)
-        menuBar.add_cascade(label= 'Opciones Admin' ,menu= OpAdmin)
         menuBar.add_cascade(label = 'Ayuda', menu= helpMenu)
         
 
@@ -316,6 +282,16 @@ Instancias.
         '''Metodo terminar, para poder encapsular el programa y salte la ejecución del programa al momento de iniciar. '''
         self.root.mainloop()
 
+    def PDFGuardar(self):
+        '''Metodo PDFGuardar, para guardar los datos '''
+        PDF = canvas.Canvas("HHHHHHHHHHHHHHHHH.pdf")
+        texto = PDF.beginText(50, 50)
+        texto.setFont("Times-Roman", 12)
+        texto.textLine(f"El ciudadano: {self.apellidoImprime} {self.numeroCedulaImprime}, con numero de cedula {self.numeroCedulaImprime}. ")
+        texto.textLine(str(self.verificacionVotante2))
+        texto.textOut(str(self.verificacionVotante3))
+        PDF.drawText(texto)
+        PDF.save()
 
 
 
@@ -329,14 +305,8 @@ if __name__=='__main__':
     application.ENTRY(1,1)
     '''Ingresa el apellido. '''
     application.LABEL('Ingrese Apellido',2,0 )
-    
+    '''Ingresar en entry'''
     application.ENTRY1(2,1)
-    
-    #obtenDatos = BuscarEnBaseDato(nombre=application.nombreRetorna, apellido=application.apellidoRetorna,  coleccion="ciudadanos" ,db="datosparaforo")
-    '''Intancia de la clase VotanteSiNo'''
-    
-    #ciudadano = VotanteSiNo(obtenDatos.Buscar('nombre'), obtenDatos.Buscar('apellido'), obtenDatos.Buscar('numeroCedula'), obtenDatos.Buscar('ocupacion'), obtenDatos.Buscar('Nacionalidad'),'2002-08-02' ,True)
-    #application.VentanaSecundaria(ciudadano.nombre, ciudadano.apellido, ciudadano.numCedula, ciudadano.ocupacion, ciudadano.nacionalidad, ciudadano.fechaDeNacimiento, ciudadano.discapacidad)
     '''Ejecuta la ventana secundaria. '''
     application.BUTTON( 3,0)
     '''Construye el programa. '''
