@@ -1,0 +1,25 @@
+2022-07-22 17:16:15,591 - ejemplo_Log - DEBUG - mensaje debug
+2022-07-22 17:16:15,592 - ejemplo_Log - INFO - mensaje info
+2022-07-22 17:16:15,592 - ejemplo_Log - WARNING - mensaje warning
+2022-07-22 17:16:15,592 - ejemplo_Log - ERROR - mensaje error
+2022-07-22 17:16:15,592 - ejemplo_Log - CRITICAL - mensaje critical
+2022-07-22 17:16:31,448 - ejemplo_Log - DEBUG - mensaje debug
+2022-07-22 17:16:31,448 - ejemplo_Log - INFO - mensaje info
+2022-07-22 17:16:31,448 - ejemplo_Log - WARNING - mensaje warning
+2022-07-22 17:16:31,448 - ejemplo_Log - ERROR - mensaje error
+2022-07-22 17:16:31,448 - ejemplo_Log - CRITICAL - mensaje critical
+mensaje debug
+mensaje info
+mensaje warning
+mensaje error
+mensaje critical
+mensaje debug
+mensaje info
+mensaje warning
+mensaje error
+mensaje critical
+mensaje debug
+mensaje info
+mensaje warning
+mensaje error
+mensaje critical
